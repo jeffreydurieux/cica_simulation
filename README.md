@@ -2,13 +2,13 @@
 
 
 # Table of Contents
-1. [Simulation 1](##Folder Simulation 1)
+1. [Simulation 1](#Sim1)
 2. [Example2](#example2)
 3. [Third Example](#third-example)
 4. [Fourth Example](#fourth-examplehttpwwwfourthexamplecom)
 
 
-## Folder Simulation 1
+## Folder Simulation 1 <a name="Sim1"></a>
 Simulation1/Simulate_CICA.R       : R-script to generate data according to C-ICA model
 Simulation1/SimulationScript.R    : R-script to run simulation study 1 
 
