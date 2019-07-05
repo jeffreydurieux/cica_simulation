@@ -28,4 +28,4 @@ Simulation2/bmaskslice.Rdata      : R data for a mask used in the analysis
 ### Create C-ICA data 
 In this part the generated FC patterns are mixed with subject specific time courses and specific noise structures are added
 
-
+Simulation2/CreateMaps/GenerateCICAdata.R : R script that simulated the data for simulation 2
