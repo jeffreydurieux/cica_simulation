@@ -15,3 +15,12 @@ Simulation1/Simulation1ANOVAdata.Rdata  : R dataframe for ANOVA
 
 
 ## Simulation 2
+
+### Create FC patterns for C-ICA model
+
+Simulation2/FCpatterns.R          : R-script used to generated FC patterns for three clusters (4 components each)
+
+Simulation2/cluster1.Rdata        : R data for cluster 1 (4 components each)
+Simulation2/cluster2.Rdata        : R data for cluster 2 (4 components each)
+Simulation2/cluster3.Rdata        : R data for cluster 3 (4 components each)
+Simulation2/bmaskslice.Rdata      : R data for a mask used in the analysis
