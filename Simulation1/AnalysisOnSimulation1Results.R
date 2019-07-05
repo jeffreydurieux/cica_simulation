@@ -93,3 +93,11 @@ Atuck_anova_res <- ezANOVA( data = dat , Atuck , wid = id, within = NULL , withi
 
 print(Atuck_anova_res)
 
+######## Time Analysis #######
+mean(dat$Time);sd(dat$Time)
+
+summaryBy(Time~V ,data = dat, FUN = c(mean,sd))
+summaryBy(Time~Q ,data = dat, FUN = c(mean,sd))
+summaryBy(Time~R ,data = dat, FUN = c(mean,sd))
+summaryBy(Time~D ,data = dat, FUN = c(mean,sd))
+summaryBy(Time~E ,data = dat, FUN = c(mean,sd))
