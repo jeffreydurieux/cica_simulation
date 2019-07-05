@@ -2,8 +2,8 @@
 
 # Table of Contents
 1. [Simulation 1](#Sim1)
-2. [Simulation 2](#Sim2)
-  1.[Create FC patterns](#CreateMaps)
+2. [Simulation 2](#Sim2) 
+    1. [Create FC patterns](#CreateMaps)
 3. [Simulation 3](#Sim3)
 
 
@@ -36,7 +36,7 @@
 
 ## Folder Simulation 3 <a name="Sim3"></a>
 
-* Simulation3/Simulation3Script     : R-script to do model selection (simulation 3) 
+* Simulation3/Simulation3Script.R     : R-script to do model selection (simulation 3) 
 
 
 
