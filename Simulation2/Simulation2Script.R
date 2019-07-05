@@ -3,6 +3,8 @@ args <- as.numeric(args)
 rep <- args[1]
 
 
+### R-version used: 3.4.4
+
 ##################################################################
 # What dataset:                                                  #
 name <- paste('rep_',rep,"CICA_simdata_0.10.Rdata",sep = "")     #
