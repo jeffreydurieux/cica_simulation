@@ -37,7 +37,7 @@ for(rep in 1:10){
   addError2 <- function(datablock,error, type = "Gaussian", additiontype = 1)
   {
     if(type == "Gaussian"){
-      errorM<-replicate(ncol(datablock),rnorm(nrow(datablock), sd = 5))
+      errorM<-replicate(ncol(datablock),rnorm(nrow(datablock), sd = 1))
     }else if(type == "AR"){
       nscan <- ncol(datablock)
       vdim <- nrow(datablock)^(1/3)
