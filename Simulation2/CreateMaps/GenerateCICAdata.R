@@ -21,18 +21,26 @@ set.seed(2407)
 # N per cluster equals 10
 for(rep in 1:10){
   
-  A1 <- Gen_TimeCourses(N = 30, nTS = 4, nscan = 150)
+  A1 <- Gen_TimeCourses(N = 10, nTS = 4, nscan = 150)
+  A2 <- Gen_TimeCourses(N = 10, nTS = 4, nscan = 150)
+  A3 <- Gen_TimeCourses(N = 10, nTS = 4, nscan = 150)
   
   
   nameext <- paste('rep_', rep, sep = "") 
   
   save(A1, file = paste(nameext,'TimeCoursesA1.Rdata' ,sep = "") )
+  save(A2, file = paste(nameext,'TimeCoursesA2.Rdata' ,sep = "") )
+  save(A3, file = paste(nameext,'TimeCoursesA3.Rdata' ,sep = "") )
   
   X1 <- lapply(seq_along(A1), function(x) tcrossprod(S1,A1[[x]]))
+  X2 <- lapply(seq_along(A2), function(x) tcrossprod(S2,A2[[x]]))
+  X3 <- lapply(seq_along(A3), function(x) tcrossprod(S3,A3[[x]]))
   
   ##### remove outer brain ####
   X1 <- lapply(seq_along(X1), function(x) X1[[x]][ idx, ])
-
+  X2 <- lapply(seq_along(X2), function(x) X2[[x]][ idx, ])
+  X3 <- lapply(seq_along(X3), function(x) X3[[x]][ idx, ])
+  
   
   addError2 <- function(datablock,error, type = "Gaussian", additiontype = 1)
   {
@@ -61,24 +69,28 @@ for(rep in 1:10){
   ######### types of Gaussian noise #############
   
   ### .10
-  XE <- lapply(X1, FUN = addError2, error = 0.1, additiontype=1)
+  XE1 <- lapply(X1, FUN = addError2, error = 0.1, additiontype=1)
+  XE2 <- lapply(X2, FUN = addError2, error = 0.1, additiontype=1)
+  XE3 <- lapply(X3, FUN = addError2, error = 0.1, additiontype=1)
   
-  #X <- c(XE1,XE2,XE3)
+  XE <- c(XE1,XE2,XE3)
   save(XE, file=paste(nameext,"CICA_simdata_0.10.Rdata",sep = ""))
   
   
   ### .30
-  XE <- lapply(X1, FUN = addError2, error = 0.3, additiontype=1)
+  XE1 <- lapply(X1, FUN = addError2, error = 0.3, additiontype=1)
+  XE2 <- lapply(X2, FUN = addError2, error = 0.3, additiontype=1)
+  XE3 <- lapply(X3, FUN = addError2, error = 0.3, additiontype=1)
   
-  
-  #X <- c(XE1,XE2,XE3)
+  XE <- c(XE1,XE2,XE3)
   save(XE, file=paste(nameext,"CICA_simdata_0.30.Rdata",sep = ""))
   
   ### .70
-  XE <- lapply(X1, FUN = addError2, error = 0.7, additiontype=1)
+  XE1 <- lapply(X1, FUN = addError2, error = 0.7, additiontype=1)
+  XE2 <- lapply(X2, FUN = addError2, error = 0.7, additiontype=1)
+  XE3 <- lapply(X3, FUN = addError2, error = 0.7, additiontype=1)
   
-  
-  
+  XE <- c(XE1,XE2,XE3)
   save(XE, file=paste(nameext,"CICA_simdata_0.70.Rdata",sep = ""))
   
   
@@ -100,31 +112,31 @@ for(rep in 1:10){
     return(x)
   }
   
-  #X <- X1
+  X <- c(X1,X2,X3)
   
   ### rho = .1
   rho <- c(.1); sd <- 1
-  Ec <- lapply(seq_along(X1), FUN = function(x) ColWiseNoise(ncol=nTime, nrow = nvoxels, rho=rho, sd = sd))
-  Er <- lapply(seq_along(X1), FUN = function(x) ColWiseNoise(ncol=nTime, nrow = nvoxels, rho=rho, sd = sd))
-  Xe <- lapply(seq_along(X1), function(x) X1[[x]] + Ec[[x]] + Er[[x]])
+  Ec <- lapply(seq_along(X), FUN = function(x) ColWiseNoise(ncol=nTime, nrow = nvoxels, rho=rho, sd = sd))
+  Er <- lapply(seq_along(X), FUN = function(x) ColWiseNoise(ncol=nTime, nrow = nvoxels, rho=rho, sd = sd))
+  Xe <- lapply(seq_along(X), function(x) X[[x]] + Ec[[x]] + Er[[x]])
   
   save(Xe, file=paste(nameext,"AR_10_CICA_simdata.Rdata",sep = ""))
   
   
   ### rho = .3
   rho <- c(.3); sd <- 1
-  Ec <- lapply(seq_along(X1), FUN = function(x) ColWiseNoise(ncol=nTime, nrow = nvoxels, rho=rho, sd = sd))
-  Er <- lapply(seq_along(X1), FUN = function(x) ColWiseNoise(ncol=nTime, nrow = nvoxels, rho=rho, sd = sd))
-  Xe <- lapply(seq_along(X1), function(x) X1[[x]] + Ec[[x]] + Er[[x]])
+  Ec <- lapply(seq_along(X), FUN = function(x) ColWiseNoise(ncol=nTime, nrow = nvoxels, rho=rho, sd = sd))
+  Er <- lapply(seq_along(X), FUN = function(x) ColWiseNoise(ncol=nTime, nrow = nvoxels, rho=rho, sd = sd))
+  Xe <- lapply(seq_along(X), function(x) X[[x]] + Ec[[x]] + Er[[x]])
   
   save(Xe, file=paste(nameext,"AR_30_CICA_simdata.Rdata",sep = ""))
   
   
   ### rho = .7
   rho <- c(.7); sd <- 1
-  Ec <- lapply(seq_along(X1), FUN = function(x) ColWiseNoise(ncol=nTime, nrow = nvoxels, rho=rho, sd = sd))
-  Er <- lapply(seq_along(X1), FUN = function(x) ColWiseNoise(ncol=nTime, nrow = nvoxels, rho=rho, sd = sd))
-  Xe <- lapply(seq_along(X1), function(x) X1[[x]] + Ec[[x]] + Er[[x]])
+  Ec <- lapply(seq_along(X), FUN = function(x) ColWiseNoise(ncol=nTime, nrow = nvoxels, rho=rho, sd = sd))
+  Er <- lapply(seq_along(X), FUN = function(x) ColWiseNoise(ncol=nTime, nrow = nvoxels, rho=rho, sd = sd))
+  Xe <- lapply(seq_along(X), function(x) X[[x]] + Ec[[x]] + Er[[x]])
   
   save(Xe, file=paste(nameext,"AR_70_CICA_simdata.Rdata",sep = ""))
   
