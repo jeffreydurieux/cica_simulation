@@ -20,7 +20,7 @@ source("/home/durieuxj/CICACODE/R/CICA_main.R")
 source("/home/durieuxj/CICACODE/R/CICA_helpers.R")
 source("/home/durieuxj/CICACODE/R/CICA_datagen.R")
 
-setwd("/exports/fsw/durieuxj/Simulations/CICA_SIM_2/Output/")
+setwd("/exports/fsw/durieuxj/Simulations/CICA_SIM_2/")
 
 #### select data set here #####
 
