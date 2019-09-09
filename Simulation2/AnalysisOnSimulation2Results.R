@@ -9,7 +9,8 @@ library(gtools)    # mixed sort
 library(doBy)      # summaryBy
 library(ez)        # ez anova
 
-setwd("~/Desktop/CICA_Sim2/maps_mask/")
+
+setwd("~/Repositories/cica_simulation/Simulation2/CreateMaps/")
 
 bmask <- get(load("bmaskslice.Rdata"))
 idx <- which(bmask==1)
@@ -24,7 +25,7 @@ S3 <- S3[ idx, ]
 
 TRUEP <- c(rep(1,10),rep(2,10),rep(3,10))
 
-
+#### simulation is run on Shark, download output to local desktop ####
 setwd("~/Desktop/CICA_Sim2/Output/")
 results <- mixedsort(dir())
 
@@ -56,7 +57,7 @@ Noise <- as.factor(Noise)
 Results <- data.frame(Case = 1:60, Noise = Noise, ARI = ARI, Tucker = Tuck)
 
 
-summaryBy(formula = Tucker~Noise, data = Results)
+summaryBy(formula = Tucker~Noise, data = Results, FUN = list(mean, sd))
 
 anova <- ezANOVA(
   data = Results
