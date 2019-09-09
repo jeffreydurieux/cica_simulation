@@ -49,19 +49,63 @@ for(i in 1:60){
   
 }
 
+####### extract Tucker values for time courses Air #########
+
+setwd("~/Desktop/CICA_Sim2/")
+TuckA <- numeric()
+
+repidx <- rep(1:10, each = 6)
+
+setwd("Output/")
+for(i in 1:60){
+  
+  if( i > 1){
+    setwd("../Output/")  
+  }
+  #### c-ica result files
+  resdatafile <- get(load(results[i]))
+  
+  estP <- resdatafile$beststart$P
+  idp <- unique(estP)
+  
+  
+  ## estimated time courses
+  EstA <- Asplit(resdatafile$beststart$Air, resdatafile$beststart$P, nTS = 150)
+  EstA <- EstA[idp]
+  
+  EstA <- unlist(EstA, recursive = F)
+  EstA <- lapply(EstA, t)
+  
+  #### get timecourses 
+  setwd("../timecourses/")
+  files <- dir()
+  files <- mixedsort(files)
+  timecoursesdata <- get(load(files[repidx[i]]) )
+  
+  AperSubject <- numeric()
+  for(j in 1:30){
+    AperSubject[j] <- mean(apply( abs( congru(timecoursesdata[[j]], EstA[[j]])), MARGIN = 2, max ) )  
+  }  
+  TuckA[i] <- mean(AperSubject)
+}
+
+
+
 Noise <- c("AR10","AR30","AR70","G10","G30","G70")
 
 Noise <- rep(Noise,10)
 Noise <- as.factor(Noise)
 
-Results <- data.frame(Case = 1:60, Noise = Noise, ARI = ARI, Tucker = Tuck)
+Results <- data.frame(Case = 1:60, Noise = Noise, ARI = ARI, Tucker = Tuck, TuckerA = TuckA)
 
-
+summaryBy(formula = ARI~Noise, data = Results, FUN = list(mean, sd))
 summaryBy(formula = Tucker~Noise, data = Results, FUN = list(mean, sd))
+summaryBy(formula = TuckerA~Noise, data = Results, FUN = list(mean, sd))
 
+#### change Tucker with Tucker A to see either spatial maps or time courses
 anova <- ezANOVA(
   data = Results
-  , dv = Tucker
+  , dv = TuckerA
   , wid = Case
   , within = NULL
   , within_full = NULL
@@ -76,10 +120,11 @@ anova <- ezANOVA(
   , detailed = FALSE
   , return_aov = TRUE
 )
+anova
 
 ezPlot(
   data = Results
-  , dv = Tucker
+  , dv = TuckerA
   , wid = Case
   , within = NULL
   , within_full = NULL
