@@ -37,7 +37,7 @@
 ## Folder Simulation 3 <a name="Sim3"></a>
 
 * Simulation3/Simulation3Script.R     : R-script to do model selection (simulation 3) 
-
+* Simulation3/SelectLowestLoss.R      : R-scriopt to select lowest loss for parallel multiple starts
 
 
 
