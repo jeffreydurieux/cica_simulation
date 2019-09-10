@@ -31,9 +31,6 @@ tmp <- proc.time()
 cica <- CICA(nStarts = 30, DataList = X, nComp = comp, nClus = clus, show='best')
 time <- proc.time() - tmp
 
-
-
-
 # output
 setwd("/exports/fsw/durieuxj/Simulations/CICA_SIM_3/")
 
