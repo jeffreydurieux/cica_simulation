@@ -27,6 +27,12 @@ setwd("~/Repositories/cica_simulation/Data/CICA_SIM_3/")
 
 files <- dir(pattern = "resultSim3")
 
+# convert to VAF
+VAF <- function(Loss, totalSSQ){
+  vaf <- (totalSSQ - Loss) / totalSSQ
+  return(vaf*100)
+}
+
 
 loss <- numeric()
 for(i in 1:length(files)){
@@ -41,16 +47,6 @@ VAFS <- sapply(loss, VAF, totalSSQ=totalSSQ)
 VAFS
 
 VAFdata <- data.frame(grid,loss=loss,VAF=VAFS)
-
-
-
-############# Functions ##############
-
-# convert to VAF
-VAF <- function(Loss, totalSSQ){
-  vaf <- (totalSSQ - Loss) / totalSSQ
-  return(vaf*100)
-}
 
 ########## step 1 function #######
 # compute scree ratio for a certain number of clusters r fixing for q components
