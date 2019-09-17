@@ -28,10 +28,25 @@ plot_ly(z= clustersmat, type = 'heatmap',
         ygap=0) %>% layout(xaxis = ax)
 
 
-##### confusion matrices
+##### confusion matrices #########
 
 
 addmargins(table(data[[1]]$labels, data[[1]]$Comp20_Clus2))
 addmargins(table(data[[1]]$labels, data[[1]]$Comp20_Clus3))
 addmargins(table(data[[1]]$labels, data[[1]]$Comp20_Clus4))
 addmargins(table(data[[1]]$labels, data[[1]]$Comp20_Clus5))
+
+
+######### measures #########
+
+library(mclust)
+library(caret)
+
+adjustedRandIndex(data[[1]]$labels, data[[1]]$Comp20_Clus2)
+
+lab <- data[[1]]$labels
+lab <- ifelse((lab == 'AD'), 2, 1)
+res <- data[[1]]$Comp20_Clus2
+table(lab,res)
+
+confusionMatrix(table(lab,res))
