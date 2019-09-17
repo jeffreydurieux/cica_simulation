@@ -26,3 +26,12 @@ plot_ly(z= clustersmat, type = 'heatmap',
         colors = colorRamp(c('grey', 'black','red', 'blue', 'darkgreen', 'orange', 'purple')), 
         xgap=50,
         ygap=0) %>% layout(xaxis = ax)
+
+
+##### confusion matrices
+
+
+addmargins(table(data[[1]]$labels, data[[1]]$Comp20_Clus2))
+addmargins(table(data[[1]]$labels, data[[1]]$Comp20_Clus3))
+addmargins(table(data[[1]]$labels, data[[1]]$Comp20_Clus4))
+addmargins(table(data[[1]]$labels, data[[1]]$Comp20_Clus5))
