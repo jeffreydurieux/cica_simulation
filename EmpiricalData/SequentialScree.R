@@ -4,15 +4,37 @@
 # What: R-script for the sequential scree model selection
 # this script is not generally applicable, it is interactive and dependent on the data that you need to check. If you want to use it you need to change some input parameters like: totalSSQ, ncomp and nclus
 
-#### VAF model selection
-####
+######## X #######
+setwd("/Volumes/LaCie/MyData/CICA/Project1/AllDataResults/dataTV/")
+files <- dir()
+X <- list()
+for(i in 1:250){
+  X[[i]] <- get(load(files[i]))
+}
+X <- lapply(X,t)
+X <- lapply(X =X, FUN = CICA::xscale)
+X <- CICA::ConcDataFun(DataList = X, ClusVec = rep(1,250))
+
+
+###### compute loss of GICA ######
+gicaloss <- numeric()
+nc <- c(20,25,30,35)
+for(i in 1:4){
+  load(paste("/Volumes/LaCie/MyData/CICA/Project1/AllDataResults/ResultsFromShark/GICA_nc",nc[i],".Rdata", sep = ""))
+  Xhat <- gica$S %*% t(gica$M)
+  gicaloss[i] <- sum((X[[1]]-Xhat)^2)
+}
+options(scipen=999)
+gicaloss
 
 
 library(plotly)
 
 ## sub selection 40 * 1000
 ## change this value depending on the data
-totalSSQ <- 40000
+totalSSQ <- 250000
+
+
 
 
 ############# Functions ##############
@@ -22,37 +44,6 @@ VAF <- function(Loss, totalSSQ){
   vaf <- (totalSSQ - Loss) / totalSSQ
   return(vaf*100)
 }
-
-#step 1 of sequentials: calculate scree ratio for each value of K (cluster) given different diff values of Q (components)
-#Then average all the SR_K over all components. and select the K that yields the highest average
-
-SR_K <- function(vafKvec){
-  res <- numeric()
-  for(i in 2:(length( vafKvec)-1 ) ){
-    res[i] <- (vafKvec[i] - vafKvec[i-1]) / (vafKvec[i+1] - vafKvec[i])  
-  }
-  res <- c(res, NA)
-  return(res)
-}
-
-#put SR_K in matrix (each column is a Q) -> compute rowmeans and select highest row = Kbest
-
-
-#step 2 of sequentials: given the optimal K, for each number of Q compute scree ratios
-# the best number of Q is the number of comp for which the scree ratio is maximal
-
-
-SR_Q <- function(vafQvec){
-  res <- numeric()
-  for(i in 2:(length(vafQvec)-1 ) ){
-    res[i] <- (vafQvec[i] - vafQvec[i-1] ) / (vafQvec[i+1] - vafQvec[i] )
-  }
-  res <- c(res, NA)
-  return(res)
-}
-
-
-
 
 
 ############# Model Selection Prep ##############
@@ -75,7 +66,8 @@ for(i in 1:16){
   loss[i] <- cica$LossHistory[cica$Iterations]
 }
 loss <- unlist(loss)
-loss
+loss <- c(gicaloss,loss)
+
 
 VAFS <- sapply(loss, VAF, totalSSQ=totalSSQ)
 VAFS
@@ -84,28 +76,72 @@ VAFdata <- data.frame(grid,loss=loss,VAF=VAFS)
 
 
 
+#step 1 of sequentials: calculate scree ratio for each value of K (cluster) given different diff values of Q (components)
+#Then average all the SR_K over all components. and select the K that yields the highest average
 
-############# Model Selection ##############
+########## step 1 function #######
+# compute scree ratio for a certain number of clusters r fixing for q components
 
-Kscree <- matrix(data = NA, nrow = 4,ncol = 4)
-row.names(Kscree) <- 2:5
+# ( Lr-1,q - Lr,q)  /  (Lr,q - Lr+1, q )
 
-for(i in 2:5){
-  vafKvec <- VAFdata[VAFdata$n.clus==i,]  
-  res <- SR_K(vafKvec = vafKvec$VAF)
-  Kscree[i-1,] <- res
+# Lq is the loss vector of length K, screes conditional on Q
+SR_rq <- function(Lq){
+  
+  Screes <- numeric()
+  
+  for(i in 1:length(Lq)){
+    if(i == 1){
+      Screes[i] <- NA
+    }
+    else if(i == length(Lq) ){
+      Screes[i] <- NA
+    }else{
+      Screes[i] <- (Lq[i-1] - Lq[i]) / (Lq[i] - Lq[i+1])
+    }
+  }
+  return(Screes)
 }
 
-#rowsums 
-rm <- rowMeans(Kscree, na.rm = TRUE)
-max(rm, na.rm = TRUE)
-which.max(rm) ### max rm is cluster to select
 
-Qvec <- VAFdata[ VAFdata$n.clus==5,]
-Qscree <- SR_Q(Qvec$VAF)
-which.max(Qscree)
-max(Qscree, na.rm = TRUE)
-Qvec
+#### compute step 1: calculate first step formula for all compentens (i.e., screeratio_r | q)
+#### average over this matrix, the position of the highest average is the optimal number of clusters
+
+Screes <- rbind(SR_rq(VAFdata[VAFdata$n.comp==20,]$loss) ,
+                SR_rq(VAFdata[VAFdata$n.comp==25,]$loss) ,
+                SR_rq(VAFdata[VAFdata$n.comp==30,]$loss) ,
+                SR_rq(VAFdata[VAFdata$n.comp==35,]$loss) )
+                
+                
+
+Screes
+colMeans(Screes, na.rm = TRUE)
+
+
+########### step 2 function #############
+# after computing the optimal number of clusters (see above)
+# compute the optimal number of components
+
+SR_qR <- function(LqR){
+  Screes <- numeric()
+  
+  for(i in 1:length(LqR)){
+    if(i == 1){
+      Screes[i] <- NA
+    }
+    else if(i == length(LqR) ){
+      Screes[i] <- NA
+    }else{
+      Screes[i] <- (LqR[i-1] - LqR[i]) / (LqR[i] - LqR[i+1])
+    }
+  }
+  return(Screes)
+}
+
+# optimal number of clusters = 3
+# the highest number indicates the position of the optimal Q. So if the fourth number is the highest then the fourth integer of the numbered vector of Q (e.g., c(2,3,4,5,6,7)) is the optimal number of Q.
+
+VAFdata[VAFdata$n.clus==3,]
+SR_qR(VAFdata[VAFdata$n.clus==3,]$loss)
 
 
 p <- plot_ly(data = VAFdata, x = unique(VAFdata$n.comp), y = ~loss[VAFdata$n.clus==2], name = "Clus 2", type = 'scatter', mode = 'lines+markers') %>% 
