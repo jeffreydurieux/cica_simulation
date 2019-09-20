@@ -5,6 +5,9 @@
 # this script is not generally applicable, it is interactive and dependent on the data that you need to check. If you want to use it you need to change some input parameters like: totalSSQ, ncomp and nclus
 
 
+###### first part of the script #########
+# this part can be skipped, load in the VAFdata frame later
+
 ###### compute loss of GICA ######
 gicaloss <- numeric()
 nc <- c(20,25,30,35)
@@ -65,6 +68,8 @@ VAFS
 gridR1 <- cbind(n.comp=c(20,25,30,35),n.clus=c(1,1,1,1))
 grid <- rbind(gridR1,grid)
 VAFdata <- data.frame(grid,loss=loss,VAF=VAFS)
+
+############### second part of the script: computations #################
 
 
 
