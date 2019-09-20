@@ -71,7 +71,7 @@ VAFdata <- data.frame(grid,loss=loss,VAF=VAFS)
 
 ############### second part of the script: computations #################
 
-
+load("~/Repositories/cica_simulation/Data/VAFdata_emprical.Rdata")
 
 #step 1 of sequentials: calculate scree ratio for each value of K (cluster) given different diff values of Q (components)
 #Then average all the SR_K over all components. and select the K that yields the highest average
