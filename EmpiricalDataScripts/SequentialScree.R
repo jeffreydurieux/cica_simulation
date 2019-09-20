@@ -4,29 +4,18 @@
 # What: R-script for the sequential scree model selection
 # this script is not generally applicable, it is interactive and dependent on the data that you need to check. If you want to use it you need to change some input parameters like: totalSSQ, ncomp and nclus
 
-######## X #######
-setwd("/Volumes/LaCie/MyData/CICA/Project1/AllDataResults/dataTV/")
-files <- dir()
-X <- list()
-for(i in 1:250){
-  X[[i]] <- get(load(files[i]))
-}
-X <- lapply(X,t)
-X <- lapply(X =X, FUN = CICA::xscale)
-X <- CICA::ConcDataFun(DataList = X, ClusVec = rep(1,250))
-
 
 ###### compute loss of GICA ######
 gicaloss <- numeric()
 nc <- c(20,25,30,35)
 for(i in 1:4){
-  load(paste("/Volumes/LaCie/MyData/CICA/Project1/AllDataResults/ResultsFromShark/GICA_nc",nc[i],".Rdata", sep = ""))
+  load(paste("~/Desktop/GICAEmpirical/GICA_nc",nc[i],".Rdata", sep = ""))
   Xhat <- gica$S %*% t(gica$M)
-  gicaloss[i] <- sum((X[[1]]-Xhat)^2)
+  gicaloss[i] <- sum(Xhat^2)
 }
-options(scipen=999)
-gicaloss
 
+gicaloss
+gicaloss <- 250000-gicaloss
 
 library(plotly)
 
@@ -69,9 +58,12 @@ loss <- unlist(loss)
 loss <- c(gicaloss,loss)
 
 
+
 VAFS <- sapply(loss, VAF, totalSSQ=totalSSQ)
 VAFS
 
+gridR1 <- cbind(n.comp=c(20,25,30,35),n.clus=c(1,1,1,1))
+grid <- rbind(gridR1,grid)
 VAFdata <- data.frame(grid,loss=loss,VAF=VAFS)
 
 
@@ -137,20 +129,21 @@ SR_qR <- function(LqR){
   return(Screes)
 }
 
-# optimal number of clusters = 3
+# optimal number of clusters = 2
 # the highest number indicates the position of the optimal Q. So if the fourth number is the highest then the fourth integer of the numbered vector of Q (e.g., c(2,3,4,5,6,7)) is the optimal number of Q.
 
-VAFdata[VAFdata$n.clus==3,]
-SR_qR(VAFdata[VAFdata$n.clus==3,]$loss)
+VAFdata[VAFdata$n.clus==2,]
+SR_qR(VAFdata[VAFdata$n.clus==2,]$loss)
 
 
-p <- plot_ly(data = VAFdata, x = unique(VAFdata$n.comp), y = ~loss[VAFdata$n.clus==2], name = "Clus 2", type = 'scatter', mode = 'lines+markers') %>% 
+p <- plot_ly(data = VAFdata, x = unique(VAFdata$n.comp), y = ~loss[VAFdata$n.clus==1], name = "Clus 1", type = 'scatter', mode = 'lines+markers') %>% 
+  add_trace(y = ~loss[VAFdata$n.clus==2], name = "Clus 2") %>% 
   add_trace(y = ~loss[VAFdata$n.clus==3], name = "Clus 3") %>% 
   add_trace(y = ~loss[VAFdata$n.clus==4], name = "Clus 4") %>% 
   add_trace(y = ~loss[VAFdata$n.clus==5], name = "Clus 5") %>% 
   layout(title = "Sequential scree plot",
          yaxis = list(title = "Variance accounted for",
-                      range=c(160000,180000)),
+                      range=c(160000,185000)),
          xaxis = list (title = "Components")
   )
 p
