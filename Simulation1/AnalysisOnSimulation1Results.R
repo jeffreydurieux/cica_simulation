@@ -93,7 +93,10 @@ summaryBy(Stuck~R ,data = dat, FUN = c(mean))
 summaryBy(Stuck~D ,data = dat, FUN = c(mean))
 summaryBy(Stuck~E ,data = dat, FUN = c(mean)) 
 
-
+summaryBy(Stuck~V:Q ,data = dat, FUN = c(mean))
+summaryBy(Stuck~D:E ,data = dat, FUN = c(mean))
+summaryBy(Stuck~R:E ,data = dat, FUN = c(mean))
+summaryBy(Stuck~D:R ,data = dat, FUN = c(mean))
 
 
 #### Atuck
@@ -104,6 +107,20 @@ summaryBy(Stuck~E ,data = dat, FUN = c(mean))
 Atuck_anova_res <- ezANOVA( data = dat , Atuck , wid = id, within = NULL , within_full = NULL , within_covariates = NULL , between = .('V','Q','R','D','E') , between_covariates = NULL , observed = NULL , diff = NULL , reverse_diff = FALSE , type = 3 , white.adjust = FALSE , detailed = FALSE , return_aov = TRUE)
 
 print(Atuck_anova_res)
+Atuck_anova_res$aov
+
+###### check how effects are going 
+
+summaryBy(Atuck~V ,data = dat, FUN = c(mean))
+summaryBy(Atuck~Q ,data = dat, FUN = c(mean))
+summaryBy(Atuck~E ,data = dat, FUN = c(mean))
+
+
+summaryBy(Atuck~V:Q ,data = dat, FUN = c(mean))
+summaryBy(Atuck~Q:E ,data = dat, FUN = c(mean))
+
+
+
 
 ######## Time Analysis #######
 # note: this has to be tested and implemented yet
