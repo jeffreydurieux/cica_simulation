@@ -84,6 +84,18 @@ Stuck_anova_res <- ezANOVA( data = dat , Stuck , wid = id, within = NULL , withi
 print(Stuck_anova_res)
 Stuck_anova_res$aov
 
+
+###### check how effects are going 
+
+summaryBy(Stuck~V ,data = dat, FUN = c(mean))
+summaryBy(Stuck~Q ,data = dat, FUN = c(mean))
+summaryBy(Stuck~R ,data = dat, FUN = c(mean))
+summaryBy(Stuck~D ,data = dat, FUN = c(mean))
+summaryBy(Stuck~E ,data = dat, FUN = c(mean)) 
+
+
+
+
 #### Atuck
 # given etasq > .15 at most two-way interactions:
 # V:Q = .80
