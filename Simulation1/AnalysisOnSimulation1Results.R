@@ -14,7 +14,7 @@ library(ez)
 # this does not work yet since repository is private
 source_data("https://github.com/jeffreydurieux/cica_simulation/blob/master/Simulation1ANOVAdata.Rdata?raw=true")
 
-load("~/Desktop/Simulation1ANOVAdata.Rdata")
+load("~/Repositories/cica_simulation/Data/Simulation1ANOVAdata.Rdata")
 
 
 ####### Check means #########
@@ -82,7 +82,7 @@ print(ari_anova_res)
 Stuck_anova_res <- ezANOVA( data = dat , Stuck , wid = id, within = NULL , within_full = NULL , within_covariates = NULL , between = .('V','Q','R','D','E') , between_covariates = NULL , observed = NULL , diff = NULL , reverse_diff = FALSE , type = 3 , white.adjust = FALSE , detailed = FALSE , return_aov = TRUE)
 
 print(Stuck_anova_res)
-
+Stuck_anova_res$aov
 
 #### Atuck
 # given etasq > .15 at most two-way interactions:
