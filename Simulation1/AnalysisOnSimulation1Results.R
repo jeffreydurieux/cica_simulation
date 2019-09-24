@@ -123,7 +123,7 @@ summaryBy(Atuck~Q:E ,data = dat, FUN = c(mean))
 
 
 ######## Time Analysis #######
-# note: this has to be tested and implemented yet
+# note: this has to be tested and is not implemented yet
 mean(dat$Time);sd(dat$Time)
 
 summaryBy(Time~V ,data = dat, FUN = c(mean,sd))
