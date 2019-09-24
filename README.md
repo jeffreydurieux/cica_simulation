@@ -16,12 +16,11 @@
 
 * Simulation1/AnalysisOnSimu...R    : Script for doing ANOVA on simulation results
 
-* Simulation1/Simulation1ANOVAdata.Rdata  : R dataframe for ANOVA
-
 
 ## Folder Simulation 2 <a name="Sim2"></a>
 
 * Simulation2/Simulation2Script.R           : R script for computer cluster to run simulation 2
+* Simulation2/AnalysisOnSimulation2Results.R : R script for analysis
 
 ### Subfolder: CreateMaps <a name="CreateMaps"></a>
 
@@ -38,7 +37,7 @@
 
 * Simulation3/Simulation3Script.R     : R-script to do model selection (simulation 3) 
 * Simulation3/SelectLowestLoss.R      : R-scriopt to select lowest loss for parallel multiple starts
-
+* Simulation3/SequentialScreeSim3.R   : R-script for sequential scree test of sim 3
 
 
 
