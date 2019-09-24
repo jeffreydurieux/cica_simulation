@@ -131,3 +131,4 @@ summaryBy(Time~Q ,data = dat, FUN = c(mean,sd))
 summaryBy(Time~R ,data = dat, FUN = c(mean,sd))
 summaryBy(Time~D ,data = dat, FUN = c(mean,sd))
 summaryBy(Time~E ,data = dat, FUN = c(mean,sd))
+
