@@ -5,7 +5,7 @@
 2. [Simulation 2](#Sim2) 
     1. [Create FC patterns](#CreateMaps)
 3. [Simulation 3](#Sim3)
-
+4. [Simulation 4](#Sim4)
 
 
 ## Folder Simulation 1 <a name="Sim1"></a>
@@ -40,5 +40,6 @@
 * Simulation3/SequentialScreeSim3.R   : R-script for sequential scree test of sim 3
 
 
+## Folder Simulation 4 <a name="Sim4"></a>
 
-
+* Simulation4/G_ICA_LossCheck.R		: R-script for empirical subselection example
