@@ -58,3 +58,5 @@ design <- expand.grid(V=V, Q = Q,
 
 RVall <- unlist(RVlist)
 design <- cbind(design, RV = RVall)
+
+save(design, file = '~/Repositories/cica_simulation/Data/Sim1RV.Rdata')
