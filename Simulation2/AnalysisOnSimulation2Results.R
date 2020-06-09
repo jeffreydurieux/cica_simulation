@@ -8,7 +8,7 @@ library(multiway)  # Tucker congruence
 library(gtools)    # mixed sort
 library(doBy)      # summaryBy
 library(ez)        # ez anova
-
+library(CICA)
 
 setwd("~/Repositories/cica_simulation/Simulation2/CreateMaps/")
 
@@ -101,6 +101,8 @@ Results <- data.frame(Case = 1:60, Noise = Noise, ARI = ARI, Tucker = Tuck, Tuck
 summaryBy(formula = ARI~Noise, data = Results, FUN = list(mean, sd))
 summaryBy(formula = Tucker~Noise, data = Results, FUN = list(mean, sd))
 summaryBy(formula = TuckerA~Noise, data = Results, FUN = list(mean, sd))
+
+### overall results
 
 #### change Tucker with Tucker A to see either spatial maps or time courses
 anova <- ezANOVA(
