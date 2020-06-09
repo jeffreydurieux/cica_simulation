@@ -6,6 +6,8 @@
     1. [Create FC patterns](#CreateMaps)
 3. [Simulation 3](#Sim3)
 4. [Simulation 4](#Sim4)
+5. [ExtraAnalysis](#extra)
+6. [SharkCode](#shark)
 
 
 ## Folder Simulation 1 <a name="Sim1"></a>
@@ -43,3 +45,20 @@
 ## Folder Simulation 4 <a name="Sim4"></a>
 
 * Simulation4/G_ICA_LossCheck.R		: R-script for empirical subselection example
+
+## Folder extra analysis <a name="extra"></a>
+
+* ExtraAnalysis/Sim1RVcheck.R		: R-script for some extra checks for paper
+* ExtraAnalysis/Sim2checks.R		: R-script for some extra checks for paper
+
+## Folder code used on Shark <a name="shark"></a>
+
+* SharkCode/CICAV2.R
+* SharkCode/CICA_PCA.R
+* SharkCode/CICA_datagen.R
+* SharkCode/CICA_helpers.R
+* SharkCode/CICA_main.R
+* SharkCode/CICA_post.R
+* SharkCode/CICA_singlesubject.R
+* SharkCode/OrderSelection.R
+* SharkCode/Simulate_CICA.R
