@@ -103,6 +103,9 @@ summaryBy(formula = Tucker~Noise, data = Results, FUN = list(mean, sd))
 summaryBy(formula = TuckerA~Noise, data = Results, FUN = list(mean, sd))
 
 ### overall results
+mean(Results$ARI); sd(Results$ARI)
+mean(Results$Tucker); sd(Results$Tucker)
+mean(Results$TuckerA); sd(Results$TuckerA)
 
 #### change Tucker with Tucker A to see either spatial maps or time courses
 anova <- ezANOVA(
