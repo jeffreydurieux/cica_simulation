@@ -150,3 +150,4 @@ hcsel <- paste(hcsel, collapse = ",")
 
 hcselidx <- match(hcsel, substr(files,1,7))
 adselidx <- match(adsel, substr(files,1,7))
+hcselidx
