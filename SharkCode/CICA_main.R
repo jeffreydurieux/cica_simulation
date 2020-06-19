@@ -22,15 +22,20 @@ CICA <- function(nStarts, DataList, nComp, nClus, show="best", startclus="random
     if(show == "best"){
       LD <- length( DataList )
       rClus <- clusf(LD, nClus)
+      
+      cat('start number: ',1,'\n')
       beststart <- CICAStart(DataList, nComp, nClus, rClus,icaf)
       Loss <- numeric()
       floss<- beststart$LossHistory[beststart$Iterations]
       for(i in 2:nStarts){
+        
+        cat('start number: ',i,'\n')
         rClus <- clusf(LD, nClus)
         nextstart <- CICAStart(DataList, nComp, nClus, rClus, icaf)
         Loss[i] <- nextstart$LossHistory[nextstart$Iterations]
         n <- nextstart$LossHistory[nextstart$Iterations]
         b <- beststart$LossHistory[beststart$Iterations]
+        
 
         if(n <= b){
           beststart <- nextstart
