@@ -16,8 +16,9 @@ args <- commandArgs(TRUE)
 
 row <- args[1]
 
-# grid with 240 rows
-mygrid <- expand.grid(clus = 2:5, comp = 2:7, rep = 1:10)
+# grid with 480 rows
+mygrid <- expand.grid(clus = 2:5, comp = 2:7, rep = 1:10, noise = c(30,70))
+
 
 set.seed(row)
 
@@ -33,8 +34,14 @@ setwd("/data/durieuxj/")
 
 #### select data set here #####
 
-datasetname <- paste('rep_', mygrid[row,]$rep,
-                     'CICA_simdata_0.30.Rdata', sep = '')
+if(mygrid[row,]$noise == 30){
+  datasetname <- paste('rep_', mygrid[row,]$rep,
+                       'CICA_simdata_0.30.Rdata', sep = '')
+}else{
+  datasetname <- paste('rep_', mygrid[row,]$rep,
+                       'CICA_simdata_0.70.Rdata', sep = '')
+}
+
 X <- get(load(datasetname))
 
 
@@ -50,6 +57,7 @@ setwd("/data/durieuxj/")
 ext1 <- paste('rep', mygrid[row,]$rep, 
               "_clus", mygrid[row,]$clus, 
               "_comp", mygrid[row,]$comp, 
+              "_noise", mygrid[row,]$noise, 
               "_resultSim3.Rdata",sep = "")
 save(cica, file = ext1)
 
