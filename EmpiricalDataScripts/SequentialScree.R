@@ -153,3 +153,16 @@ p <- plot_ly(data = VAFdata, x = unique(VAFdata$n.comp), y = ~loss[VAFdata$n.clu
   )
 p
 
+
+pvaf <- plot_ly(data = VAFdata, x = unique(VAFdata$n.comp), y = ~VAF[VAFdata$n.clus==1], name = "Clus 1", type = 'scatter', mode = 'lines+markers') %>% 
+  add_trace(y = ~VAF[VAFdata$n.clus==2], name = "Clus 2") %>% 
+  add_trace(y = ~VAF[VAFdata$n.clus==3], name = "Clus 3") %>% 
+  add_trace(y = ~VAF[VAFdata$n.clus==4], name = "Clus 4") %>% 
+  add_trace(y = ~VAF[VAFdata$n.clus==5], name = "Clus 5") %>% 
+  layout(title = "Sequential scree plot",
+         yaxis = list(title = "Variance accounted for",
+                      range=c(25,36)),
+         xaxis = list (title = "Components")
+  )
+pvaf
+

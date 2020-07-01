@@ -5,10 +5,13 @@
 
 # marginal means for three outcomes: ARI, S tucker and A tucker
 
+# Tue Jun 30 15:11:18 2020
+# added plotly figures for anova interactions
 
 library(doBy)
 library(repmis)
 library(ez)
+library(plotly)
 
 ##### Load anova input dataframe #######
 # this does not work yet since repository is private
@@ -93,10 +96,10 @@ summaryBy(Stuck~R ,data = dat, FUN = c(mean))
 summaryBy(Stuck~D ,data = dat, FUN = c(mean))
 summaryBy(Stuck~E ,data = dat, FUN = c(mean)) 
 
-summaryBy(Stuck~V:Q ,data = dat, FUN = c(mean))
-summaryBy(Stuck~D:E ,data = dat, FUN = c(mean))
-summaryBy(Stuck~R:E ,data = dat, FUN = c(mean))
-summaryBy(Stuck~D:R ,data = dat, FUN = c(mean))
+summaryBy(Stuck~V:Q ,data = dat, FUN = c(mean,sd))
+summaryBy(Stuck~D:E ,data = dat, FUN = c(mean,sd))
+summaryBy(Stuck~R:E ,data = dat, FUN = c(mean,sd))
+summaryBy(Stuck~D:R ,data = dat, FUN = c(mean,sd))
 
 
 #### Atuck
@@ -132,3 +135,191 @@ summaryBy(Time~R ,data = dat, FUN = c(mean,sd))
 summaryBy(Time~D ,data = dat, FUN = c(mean,sd))
 summaryBy(Time~E ,data = dat, FUN = c(mean,sd))
 
+
+#### plots #####
+
+## S
+# given etasq > .15 at most two-way interactions:
+# V:Q = .58
+# D:E = .47
+# R:E = .17
+# R:D = .17
+
+
+### fig1a ####
+D_VQ <- summaryBy(Stuck~V:Q ,data = dat, FUN = c(mean,plotrix::std.error))
+D_VQ
+D_VQ <- rename(D_VQ, c("Stuck.FUN1" = "mean"))
+D_VQ <- rename(D_VQ, c("Stuck.FUN2" = "se"))
+D_VQ$se2 <- D_VQ$se*2
+D_VQ
+data <- D_VQ
+
+fig1a <- plot_ly(data = data[which(data$V == 500),], x = ~Q, y = ~mean, type = 'scatter', mode = 'lines+markers',
+               name = '500 voxels',
+               error_y = ~list(array = se2,
+                               color = '#000000'))
+fig1a <- fig1a %>% add_trace(data = data[which(data$V == 2000),], name = '2000 voxels')
+fig1a <- fig1a %>% layout(yaxis = list(title = 'Tucker congruence',
+                                       range = c(0.90,1.01) ),
+                          xaxis = list(title = 'FC patterns Q')
+                          )
+fig1a
+
+
+### fig1b ####
+D_DE <- summaryBy(Stuck~D:E ,data = dat, FUN = c(mean,plotrix::std.error))
+D_DE
+D_DE <- rename(D_DE, c("Stuck.FUN1" = "mean"))
+D_DE <- rename(D_DE, c("Stuck.FUN2" = "se"))
+D_DE$E <- plyr::revalue(D_DE$E, c('0.05'='5','0.2'='20','0.4'='40'))
+D_DE$se2 <- D_DE$se*2
+D_DE
+data <- D_DE
+
+fig1b <- plot_ly(data = data[which(data$D == 'square'),], x = ~E, y = ~mean, type = 'scatter', mode = 'lines+markers',
+                 name = 'Square',
+                 error_y = ~list(array = se2,
+                                 color = '#000000'))
+fig1b <- fig1b %>% add_trace(data = data[which(data$D == 'nonsquare'),], name = 'Non-square')
+fig1b <- fig1b %>% layout(yaxis = list(title = 'Tucker congruence',
+                                       range = c(0.90,1.01) ),
+                          xaxis = list(title = 'Noise %'))
+fig1b
+
+### fig1c ####
+D_RE <- summaryBy(Stuck~R:E ,data = dat, FUN = c(mean,plotrix::std.error))
+D_RE
+D_RE <- rename(D_RE, c("Stuck.FUN1" = "mean"))
+D_RE <- rename(D_RE, c("Stuck.FUN2" = "se"))
+D_RE$E <- plyr::revalue(D_RE$E, c('0.05'='5','0.2'='20','0.4'='40'))
+D_RE$se2 <- D_RE$se*2
+D_RE
+data <- D_RE
+
+fig1c <- plot_ly(data = data[which(data$R == 2),], x = ~E, y = ~mean, type = 'scatter', mode = 'lines+markers',
+                 name = '2 Clusters',
+                 line = list(color = 'rgb(140, 86, 75)'),
+                 marker = list(color = 'rgb(140, 86, 75)'),
+                 error_y = ~list(array = se2,
+                                 color = '#000000'))
+fig1c <- fig1c %>% add_trace(data = data[which(data$R == 4),], name = '4 Clusters',
+                             line = list(color = 'rgb(148, 103, 189)'),
+                             marker = list(color = 'rgb(148, 103, 189)'))
+fig1c <- fig1c %>% layout(yaxis = list(title = 'Tucker congruence',
+                                       range = c(0.90,1.01) ),
+                          xaxis = list(title = 'Noise %'))
+fig1c
+
+
+### fig1d ####
+
+D_DR <- summaryBy(Stuck~D:R ,data = dat, FUN = c(mean,plotrix::std.error))
+D_DR
+D_DR <- rename(D_DR, c("Stuck.FUN1" = "mean"))
+D_DR <- rename(D_DR, c("Stuck.FUN2" = "se"))
+#D_DR$E <- plyr::revalue(D_RE$E, c('0.05'='5','0.2'='20','0.4'='40'))
+D_DR$se2 <- D_DR$se*2
+D_DR
+data <- D_DR
+
+fig1d <- plot_ly(data = data[which(data$R == 2),], x = ~D, y = ~mean, type = 'scatter', mode = 'lines+markers',
+                 name = '2 clusters', 
+                 line = list(color = 'rgb(140, 86, 75)'),
+                 marker = list(color = 'rgb(140, 86, 75)'),
+                 error_y = ~list(array = se2,
+                                 color = '#000000'))
+fig1d <- fig1d %>% add_trace(data = data[which(data$R == 4),], 
+                             name = '4 clusters',
+                             line = list(color = 'rgb(148, 103, 189)'),
+                             marker = list(color = 'rgb(148, 103, 189)'))
+fig1d <- fig1d %>% layout(yaxis = list(title = 'Tucker congruence',
+                                       range = c(0.90,1.01) ),
+                          xaxis = list(title = 'Dimension A'))
+fig1d
+
+# V:Q = .58
+# D:E = .47
+# R:E = .17
+# R:D = .17
+
+subplot( style(fig1a, showlegend = T),
+         style(fig1b, showlegend = T),
+         style(fig1c, showlegend = F),
+         style(fig1d, showlegend = T),
+         nrows = 2, shareY = T, margin = 0.10,titleX = T) 
+  
+subplot( style(fig1a, showlegend = T),
+         style(fig1b, showlegend = T),
+         nrows = 1, shareY = T, margin = 0.10,titleX = T)
+  
+subplot( style(fig1c, showlegend = F),
+         style(fig1d, showlegend = T),
+         nrows = 1, shareY = T, margin = 0.10,titleX = T)
+
+
+  # layout(annotations = list(
+  #   list(x = 0.13 , y = 0.45, text = "<b>Clusters = 3<b>", showarrow = F, xref='paper', yref='paper', font = list(size = 15)),
+  #   list(x = 0.88 , y = 0.45, text = "<b>Clusters = 5<b>", showarrow = F, xref='paper', yref='paper', font = list(size = 15))
+  # )
+  # )
+
+
+
+## A
+# V:Q = .80
+#### fig2a #####
+Dd_DR <- summaryBy(Atuck~V:Q ,data = dat, FUN = c(mean,plotrix::std.error))
+Dd_DR
+Dd_DR <- rename(Dd_DR, c("Atuck.FUN1" = "mean"))
+Dd_DR <- rename(Dd_DR, c("Atuck.FUN2" = "se"))
+#D_DR$E <- plyr::revalue(D_RE$E, c('0.05'='5','0.2'='20','0.4'='40'))
+Dd_DR$se2 <- Dd_DR$se*2
+Dd_DR
+data <- Dd_DR
+
+fig2a <- plot_ly(data = data[which(data$Q == 2),], x = ~V, y = ~mean, type = 'scatter', mode = 'lines+markers',
+                 name = 'Q = 2',
+                 error_y = ~list(array = se2,
+                                 color = '#000000'))
+fig2a <- fig2a %>% add_trace(data = data[which(data$Q == 5),], name = 'Q = 5')
+fig2a <- fig2a %>% add_trace(data = data[which(data$Q == 20),], name = 'Q = 20')
+fig2a <- fig2a %>% layout(yaxis = list(title = 'Tucker congruence',
+                                       range = c(0.90,1.01) ),
+                          xaxis = list(title = 'Voxels'))
+fig2a
+
+
+# Q:E = .21
+#### fig2b #####
+Dd_QE <- summaryBy(Atuck~Q:E ,data = dat, FUN = c(mean,plotrix::std.error))
+Dd_QE
+Dd_QE <- rename(Dd_QE, c("Atuck.FUN1" = "mean"))
+Dd_QE <- rename(Dd_QE, c("Atuck.FUN2" = "se"))
+Dd_QE$E <- plyr::revalue(Dd_QE$E, c('0.05'='5','0.2'='20','0.4'='40'))
+Dd_QE$se2 <- Dd_QE$se*2
+Dd_QE
+data <- Dd_QE
+
+fig2b <- plot_ly(data = data[which(data$Q == 2),], x = ~E, y = ~mean, type = 'scatter', mode = 'lines+markers',
+                 name = 'Q = 2',
+                 line = list(color = 'rgb(31, 119, 180)'),
+                 marker = list(color = 'rgb(31, 119, 180)'),
+                 error_y = ~list(array = se2,
+                                 color = '#000000'))
+fig2b <- fig2b %>% add_trace(data = data[which(data$Q == 5),], 
+                             line = list(color = 'rgb(255, 127, 14)'),
+                             marker = list(color = 'rgb(255, 127, 14)'),
+                             name = 'Q = 5')
+fig2b <- fig2b %>% add_trace(data = data[which(data$Q == 20),], 
+                             line = list(color = 'rgb(44, 160, 44)'),
+                             marker = list(color = 'rgb(44, 160, 44)'),
+                             name = 'Q = 20')
+fig2b <- fig2b %>% layout(yaxis = list(title = 'Tucker congruence',
+                                       range = c(0.90,1.01) ),
+                          xaxis = list(title = 'Noise %'))
+fig2b
+
+subplot( style(fig2a, showlegend = F),
+         style(fig2b, showlegend = T),
+         nrows = 1, shareY = T, margin = 0.10,titleX = T)
