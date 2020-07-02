@@ -126,3 +126,16 @@ p <- plot_ly(data = VAFdata, x = unique(VAFdata$n.comp), y = ~VAF[VAFdata$n.clus
   )
 p
 
+
+#### table original loss values  CICA paper ####
+# Q = 2 ..7 in rows, R =1 to 5 in cols
+
+VAFdata
+
+
+
+
+
+
+
+
