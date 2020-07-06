@@ -1,3 +1,8 @@
+# Fri Jul  3 12:09:54 2020
+# Author: Jeffrey Durieux, MSc
+
+# redo failed files
+
 #### Model Selection Beckmann networks
 # true model: 3 clusters 4 components
 # range of clusters = 2, 3, 4, 5  # do group icas for K = 1
@@ -20,20 +25,14 @@ args <- commandArgs(TRUE)
 #args <- as.numeric(args)
 
 row <- args[1]
-#row <- row + 100
-#row <- row + 200
-#row <- row + 300
-#row <- row + 400
-#row <- row + 500
 
 
+setwd("/data/durieuxj/")
+load('Sim3GridModSelALICENotDoneYet.Rdata')
 
+mygrid <- mygridnew
 
-# grid with 600 rows
-mygrid <- expand.grid(clus = 1:5, comp = 2:7, rep = 1:10, noise = c(30,70))
-
-
-set.seed(row)
+set.seed(mygrid$mstart[row])
 
 ##### source CICA files
 library(ica)
@@ -42,8 +41,6 @@ library(mclust)
 source("/data/durieuxj/CICACODE/CICA_main.R")
 source("/data/durieuxj/CICACODE/CICA_helpers.R")
 source("/data/durieuxj/CICACODE/CICA_datagen.R")
-
-setwd("/data/durieuxj/")
 
 #### select data set here #####
 
@@ -73,12 +70,13 @@ if(mygrid[row,]$clus == 1){
 #time <- proc.time() - tmp
 
 # output
-setwd("/data/durieuxj/CICAsim3Results/")
+setwd("/data/durieuxj/CICAsim3Results/mstarts")
 
 ext1 <- paste('rep', mygrid[row,]$rep, 
               "_clus", mygrid[row,]$clus, 
               "_comp", mygrid[row,]$comp, 
               "_noise", mygrid[row,]$noise,
               '_rowid',row, 
+              '_mstart',mygrid$mstart,
               "_resultSim3.Rdata",sep = "")
 save(cica, file = ext1)
