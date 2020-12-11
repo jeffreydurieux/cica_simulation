@@ -42,11 +42,21 @@ dfad_ord <- dfad[order(dfad$pred, decreasing = T),]
 dfad_ord
 dfad_ord <- dfad_ord[1:20,]
 
+dff_ord <- data[order(data$pred),]
+dff_ord
+
+low <- dff_ord[1:20,]
+high <- dff_ord[231:250,]
+low
+high
 
 #### compare ####
 
 files <- substr(files, 1, 7)
+
+### select line 58 or 59 
 pred <- c(dfhc_ord$name,dfad_ord$name)
+pred <- c(low$name, high$name)
 
 cbind(files, pred)
 
@@ -72,6 +82,11 @@ boxplot(data$pred~data$class)
 abline(h = 0.5)
 
 library(plotly)
+
+#prod010 wrongly allocated
+
+mis <- which(checkdata$name == 'prod010')
+
 data$class <- as.factor(data$class)
 p1 <- ggplot(data, aes(x=class, y=pred)) + 
   geom_hline(yintercept = 0.5, linetype = 'dashed')+
@@ -84,10 +99,17 @@ p1
 checkdata$class <- as.factor(checkdata$class)
 p2 <- ggplot(checkdata, aes(x=class, y=pred)) + 
   geom_hline(yintercept = 0.5, linetype = 'dashed')+
-  geom_boxplot()
+  geom_boxplot() +
+  geom_point(aes( x = '1', y = pred[mis]), shape = 2, color = 'red', size = 3)
 p2
 
 p2 <- ggplotly(p2)
 p2
 
 subplot(p1,p2)
+
+predlabel <- ifelse(data$pred>0.5, 1, 0)
+tab <- table(predlabel,data$class)
+caret::confusionMatrix(tab)
+
+ROCit::rocit(predlabel, data$class)
