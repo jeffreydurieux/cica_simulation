@@ -4,20 +4,35 @@
 # What:
 # Extra simulations C-ICA
 # Group-ICA + dual regression and clustering:
-  # - hclust ward
-  # - PAM
-  # - kmeans + tandem analysis
+# - hclust ward
+# - PAM
+# - kmeans + tandem analysis
+# computation of modRV takes a long time
+# put design (1:72, parallel )
+
 library(ica)
 library(NMFN) #moore penrose
 library(mclust) # ARI
 library(cluster) # pam
 
+
 ##### functions to use #######
 
-Tucker <- function(X, Y){
-  return (diag(1 / sqrt(colSums(X^2))) %*% crossprod(X,Y) %*% diag(1 / sqrt(colSums(Y^2))) )
-}
+modRV <- function(X, Y){
 
+  if(nrow(X) != nrow(Y)){
+    stop('Number of rows of input matrices are not equal')
+  }
+
+  XXtilde <- ( X %*% t(X) ) - diag (diag( X %*% t(X) ) )
+  YYtilde <- ( Y %*% t(Y) ) - diag (diag( Y %*% t(Y) ) )
+
+  res <-  ( t(c(XXtilde)) %*% c(YYtilde) ) /
+    ( sqrt( ( t(c(XXtilde)) %*% c(XXtilde)) * ( t(c(YYtilde)) %*% c(YYtilde)) ) )
+
+
+  return(res)
+}
 
 
 Simulate_CICA <- function(N = 40, V = 1000, D = 100, Q = 2, R = 2, E = 0.1){
@@ -102,11 +117,13 @@ replication <- args[1]
 #row <- args[2]
 
 replication <- 1
-row <- 13
+#row <- 66
 
-for(row in 1:nrow(design)){
+tmp <- proc.time()
+
+for(row in 1:12){
   # This will generate a unique seed
-  tmp <- proc.time()
+
   seed <- as.numeric(paste(replication,0,row,sep = ""))
   set.seed(seed)
 
@@ -222,12 +239,12 @@ for(row in 1:nrow(design)){
 
   for(i in 1:nrow(comb)){
 
-    RVS[i] <- mean(diag(Tucker( Shats[[ comb[i,1] ]] , Shats[[ comb[i,2] ]])))
+    RVS[i] <- modRV( Shats[[ comb[i,1] ]] , Shats[[ comb[i,2] ]])
     res <- c(comb[i , ] , RVS[i] )
 
     RVsS[res[1]  , res[2] ] <- res[3]
 
-    RVSG2[i] <- mean(diag(Tucker( ShatsG2[[ comb[i,1] ]] , ShatsG2[[ comb[i,2] ]])))
+    RVSG2[i] <- modRV( ShatsG2[[ comb[i,1] ]] , ShatsG2[[ comb[i,2] ]])
     res <- c(comb[i , ] , RVSG2[i] )
 
     RVsSG2[res[1]  , res[2] ] <- res[3]
@@ -311,13 +328,14 @@ for(row in 1:nrow(design)){
   output$clusterings <- clusterings
   output$ARIs <- ARIs
 
-  timerv <- proc.time() - tmp
+
 
   setwd('~/Downloads/')
 
-  save(output, file = paste("DualRegTuck_rep",replication,"row",row,  "BulkData.Rdata",sep = "_"))
+  save(output, file = paste("DualRegRV_rep",replication,"row",row,  "BulkData.Rdata",sep = "_"))
   cat('row ', row, '\n')
+
 }
-
-
+time <- proc.time() - tmp
+save(time, file = 'timingfirst12.Rdata')
 
