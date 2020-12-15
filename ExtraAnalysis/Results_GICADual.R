@@ -1,4 +1,4 @@
-setwd('~/Downloads/CICA_GICAdualResults/')
+setwd('~/Repositories/cica_simulation/Data/CICA_SIM_4/CICA_GICAdualResults/')
 library(gtools)
 
 files <- dir()
