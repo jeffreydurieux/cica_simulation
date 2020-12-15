@@ -103,6 +103,12 @@ p2 <- ggplot(checkdata, aes(x=class, y=pred)) +
   geom_point(aes( x = '1', y = pred[mis]), shape = 2, color = 'red', size = 3)
 p2
 
+#without point/triangle
+p2 <- ggplot(checkdata, aes(x=class, y=pred)) + 
+  geom_hline(yintercept = 0.5, linetype = 'dashed')+
+  geom_boxplot() 
+p2
+
 p2 <- ggplotly(p2)
 p2
 

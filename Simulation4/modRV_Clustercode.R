@@ -30,7 +30,7 @@ modRV <- function(X, Y){
   return(res)
 }
 
-N <- 40
+N <- 60
 comb <- t(combn(1:N, 2))
 
 splits <- split(1:780, ceiling(seq_along(1:780)/100))

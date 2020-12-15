@@ -22,6 +22,10 @@ dataL <- lapply(dataL, t)
 
 #### GICA dual regression selecting for 20 components #####
 library(ica)
+library(CICA)
+library(NMFN)
+library(mclust)
+library(cluster)
 
 # Concatenate data
 X <- do.call(cbind, dataL)
@@ -42,6 +46,7 @@ Ahats <- lapply(seq_along(XX),
 Shats <- lapply(seq_along(Ahats),
                 function(lam) XX[[lam]] %*% mpinv(Ahats[[lam]]))
 
+save(Shats, file = '../ShatsGICADUAL.Rdata')
 
 N <- 40
 comb <- t(utils::combn(1:N, 2))
@@ -79,15 +84,16 @@ RVmat <- as.dist(1-RVsS)
 
 #### MDS####
 mds <- cmdscale(RVmat)
-plot_ly(data.frame(mds), x= ~X1, y= ~X2)
+plot_ly(data.frame(mds), x= ~X1, y= ~X2, color = labels)
 
 hcl <- hclust(d = RVmat, method = 'ward.D2')
 plot(hcl)
 
 k <- cutree(hcl, k = 2)
-p1 <- plot_ly(data.frame(mds), x= ~X1, y= ~X2, color = as.factor(k))
+p1 <- plot_ly(data.frame(mds), x= ~X1, y= ~X2, color = as.factor(k), colors = c('blue','red'))
+
 labels
-p2 <- plot_ly(data.frame(mds), x= ~X1, y= ~X2, color = labels, colors = c('red','blue'))
+p2 <- plot_ly(data.frame(mds), x= ~X1, y= ~X2, color = labels)
 subplot(p1,p2)
 
 hclARI <- adjustedRandIndex(labels, k)
@@ -106,17 +112,11 @@ cbind(cica$P, k,pam$clustering)
 
 # modRV procedure paper 1
 # fails due to vector memory exhaustion
-rat <- FindRationalStarts(DataList = dataL, nComp = 20, nClus = 2,pseudo = F)
+# done on shark, scripts located in simulation 4 folder
+
+#rat <- FindRationalStarts(DataList = dataL, nComp = 20, nClus = 2,pseudo = F)
 
 
-N <- 40
-comb <- t(utils::combn(1:N, 2))
-
-RVsS <- matrix(data = NA, nrow = N , ncol = N)
-RVS <- numeric()
-
-cat("Computing pairwise modRV statistics: \n")
-pb <- txtProgressBar(min = 0, max = nrow(comb), initial = 0)
 
 Shats <- lapply(dataL, FUN = icafast, nc = 20)
 Shats <- lapply(seq_along(Shats), function(lam) Shats[[lam]]$S)
@@ -124,18 +124,51 @@ Shats <- lapply(seq_along(Shats), function(lam) Shats[[lam]]$S)
 #save Shats for cluster
 save(Shats, file = '../SingleICAsShats.Rdata')
 
+
+##### MDS picture of unreduced data #####
+
+RVsX <- matrix(data = NA, nrow = N , ncol = N)
+RVS <- numeric()
+
 for(i in 1:nrow(comb)){
 
-  RVS[i] <- modRV( Shats[[ comb[i,1] ]] , Shats[[ comb[i,2] ]])
+  RVS[i] <- mean(diag(Tucker( XX[[ comb[i,1] ]] , XX[[ comb[i,2] ]])))
   res <- c(comb[i , ] , RVS[i] )
 
-  RVsS[res[1]  , res[2] ] <- res[3]
-
-
+  RVsX[res[1]  , res[2] ] <- res[3]
 
   setTxtProgressBar(pb, i)
 }
 
-RVsS[lower.tri(RVsS)] = t(RVsS)[lower.tri(RVsS)]
-diag(RVsS) <- 1
+RVsX[lower.tri(RVsX)] = t(RVsX)[lower.tri(RVsX)]
+diag(RVsX) <- 1
 cat('\n')
+
+save(RVsX, file = '../RVX_datasubselection.Rdata')
+
+RVXmat <- as.dist(1-RVsX)
+
+#### MDS####
+mds <- cmdscale(RVXmat)
+p3 <- plot_ly(data.frame(mds), x= ~X1, y= ~X2, color = labels, text = 1:40)
+
+
+#### final MDS plots #####
+ax <- list(
+  title = "",
+  zeroline = TRUE,
+  showline = TRUE,
+  showticklabels = F,
+  showgrid = TRUE
+)
+
+p3 %>% layout(xaxis = ax, yaxis = ax)
+subplot(p2 %>% layout(xaxis = ax, yaxis = ax),
+        p1 %>% layout(xaxis = ax, yaxis = ax))
+
+p4 <- plot_ly(data.frame(mds), x= ~X1, y= ~X2, color = as.factor(cica$P), colors = c('red','blue'), text = 1:40)
+
+subplot(p2 %>% layout(xaxis = ax, yaxis = ax),
+        p4 %>% layout(xaxis = ax, yaxis = ax))
+
+
