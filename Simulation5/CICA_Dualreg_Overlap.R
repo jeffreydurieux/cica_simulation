@@ -28,7 +28,7 @@ design <- expand.grid(n_clusters = n_clusters,
 
 ##### sim testdata #####
 set.seed(2407)
-testdata <- SimData(Nsamp = 40, n_clusters = 4, con = .395, error = 0.7)
+testdata <- SimData(Q = 20, Nsamp = 40, n_clusters = 4, con = .15, error = 0.5)
 
 shuffle <- shuffleR4(testdata$Xe, R = 4)
 

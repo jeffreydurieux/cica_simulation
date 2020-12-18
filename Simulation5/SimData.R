@@ -15,18 +15,18 @@ Sim_A <- function(nscan, n_signals){
   return(TS)
 }
 
-SimData <- function(Nsamp, n_clusters, con, error, withperm = F){
+SimData <- function(Q, nscan, Nsamp, n_clusters, con, error, withperm = F){
   
-  Sbase <- replicate(n = 5, expr = runif(n = 1000, min = -1, max = 1))
+  Sbase <- replicate(n = Q, expr = runif(n = 1000, min = -1, max = 1))
   
   Alist <- list()
   Slist <- list()
   Xlist <- list()
   for(i in 1:n_clusters){
       Alist[[i]] <- replicate( (Nsamp / n_clusters) , 
-                               Sim_A(nscan = 20,n_signals = 5), simplify = F) 
+                               Sim_A(nscan = nscan,n_signals = Q), simplify = F) 
       
-      Slist[[i]] <- replicate(n = 5, 
+      Slist[[i]] <- replicate(n = Q, 
                               runif(n = 1000, min = -con, max = con))
       
     
