@@ -1,6 +1,7 @@
 # C-ICA simulations
 
-For information please contact me: j.durieux at fsw.leidenuniv.nl
+This is an active repository related to simulation studies for evaluating Clusterwise Independent Component Analysis
+For information please contact: j.durieux at fsw.leidenuniv.nl
 
 Note: many (almost all) scripts are performed on a computer cluster. 
 Scripts that contain the command --> "commandArgs(trailingOnly = TRUE)"
