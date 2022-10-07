@@ -2,6 +2,11 @@
 
 For information please contact me: j.durieux at fsw.leidenuniv.nl
 
+Note: many (almost all) scripts are performed on a computer cluster. 
+Scripts that contain the command --> "commandArgs(trailingOnly = TRUE)"
+are for example scripts that are intended to run in parallel on a computer cluster.
+This is strongly advised in order to save computation time
+
 # Table of Contents
 1. [Simulation 1](#Sim1)
 2. [Simulation 2](#Sim2) 
