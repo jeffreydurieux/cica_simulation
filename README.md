@@ -1,5 +1,7 @@
 # C-ICA simulations
 
+For information please contact me: j.durieux at fsw.leidenuniv.nl
+
 # Table of Contents
 1. [Simulation 1](#Sim1)
 2. [Simulation 2](#Sim2) 
